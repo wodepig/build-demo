@@ -1,7 +1,8 @@
 <template>
   <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-  <button @click="refresh" style="padding: 8px 16px; background-color: #42b983; color: white; border: none; border-radius: 4px; cursor: pointer;">
-    刷新
+  <span>我是版本1</span>
+    <button @click="refresh" style="padding: 8px 16px; background-color: #42b983; color: white; border: none; border-radius: 4px; cursor: pointer;">
+    刷新_v0.1
   </button>
   <div>
    请点击刷新按钮: {{ msg }}
