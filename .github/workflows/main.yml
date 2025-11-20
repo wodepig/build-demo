@@ -1,0 +1,45 @@
+name: 程序部署
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-push:
+    if: contains(github.event.head_commit.message, '部署') || contains(github.event.head_commit.message, 'exe')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.18.2'
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential python3  # 安装编译工具和Python（oxc-parser编译依赖）
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies (with fixes)
+        run: |
+          # 清除可能残留的冲突依赖
+          rm -rf node_modules package-lock.json pnpm-lock.yaml
+          # 安装依赖：强制编译原生模块+跳过peer依赖冲突（CI环境优先保证流程通）
+          pnpm i @oxc-parser/binding-linux-x64-gnu
+          pnpm install
+
+      - name: Build project
+        run: pnpm build
+      - name: Push To UpgradeLink
+        id: push-upgradelink
+        uses: wodepig/upgradelink-upload-xxdl@v1
+        with:
+          upgradelink_username: user1
+          upgradelink_pwd: user1pwd
+          dist_url: .output
+          auto_push: true
