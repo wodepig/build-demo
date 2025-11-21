@@ -7,9 +7,17 @@ on:
 
 jobs:
   build-push:
-    if: contains(github.event.head_commit.message, '部署') || contains(github.event.head_commit.message, 'exe')
+    if: contains(github.event.head_commit.message, '自动更新') || contains(github.event.head_commit.message, 'exe')
+    environment: prod
     runs-on: ubuntu-latest
     steps:
+          # 获取git commit消息并去除"自动更新"
+      - name: Get commit message
+        id: get_commit_message
+        run: |
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          CLEANED_MESSAGE="${COMMIT_MESSAGE//自动更新/}"
+          echo "cleaned_message=$CLEANED_MESSAGE" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -27,9 +35,13 @@ jobs:
         run: pnpm build
       - name: Push To UpgradeLink
         id: push-upgradelink
-        uses: wodepig/upgradelink-upload-xxdl@97f35abfeba9de9103f5fe56e46c71d0130dbeaf
+        uses: wodepig/upgradelink-upload-xxdl@1ca7fa24cc32496e6fc311deac6d96ed1b5e1467
         with:
-          upgradelink_username: user1
-          upgradelink_pwd: user1pwd
+          upgradelink_username: ${{ vars.UPGRADELINK_USERNAME }}
+          upgradelink_pwd: ${{secrets.UPGRADELINK_PWD}}
+          upgradelink_type: ${{ vars.UPGRADELINK_TYPE }}
+          upgradelink_key: ${{secrets.UPGRADELINK_KEY}}
+          prompt_upgrade_content: ${{ env.cleaned_message }}
           dist_url: .output
+          yunma_token: ${{ vars.YUNMA_TOKEN }}
           auto_push: true
