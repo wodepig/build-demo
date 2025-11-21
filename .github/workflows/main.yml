@@ -11,13 +11,6 @@ jobs:
     environment: prod
     runs-on: ubuntu-latest
     steps:
-          # 获取git commit消息并去除"自动更新"
-      - name: Get commit message
-        id: get_commit_message
-        run: |
-          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-          CLEANED_MESSAGE="${COMMIT_MESSAGE//自动更新/}"
-          echo "cleaned_message=$CLEANED_MESSAGE" >> $GITHUB_ENV
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -25,6 +18,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.19.4'
+          # 获取git commit消息并去除"自动更新"
+      - name: Get commit message
+        id: get_commit_message
+        run: |
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          CLEANED_MESSAGE="${COMMIT_MESSAGE//自动更新/}"
+          echo "cleaned_message=$CLEANED_MESSAGE" >> $GITHUB_ENV
       - name: Install pnpm
         run: npm install -g pnpm
 
