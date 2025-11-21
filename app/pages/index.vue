@@ -2,8 +2,9 @@
       <!-- <button @click="refresh" style="padding: 8px 16px; background-color: #42b983; color: white; border: none; border-radius: 4px; cursor: pointer;">
     升级测试
   </button> -->
+  <h3>版本3</h3>
   <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-  <span>我是版本2</span>
+  <span>我是版本3</span>
     <button @click="refresh" style="padding: 8px 16px; background-color: #42b983; color: white; border: none; border-radius: 4px; cursor: pointer;">
     刷新_v0.2
   </button>
