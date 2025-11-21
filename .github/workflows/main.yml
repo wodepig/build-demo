@@ -40,7 +40,7 @@ jobs:
         run: pnpm build
       - name: Push To UpgradeLink
         id: push-upgradelink
-        uses: wodepig/upgradelink-upload-xxdl@488c46d569e8f0704717f418451b970313884b48
+        uses: wodepig/upgradelink-upload-xxdl@8311560b701fe789c3cffa696a01222ec93cc9d3
         with:
           upgradelink_username: ${{ vars.UPGRADELINK_USERNAME }}
           upgradelink_pwd: ${{secrets.UPGRADELINK_PWD}}
