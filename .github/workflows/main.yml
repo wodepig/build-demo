@@ -19,11 +19,16 @@ jobs:
         with:
           node-version: '20.19.4'
           # 获取git commit消息并去除"自动更新"
-      - name: Get commit message
+      - name: Get commit message and clean it
         id: get_commit_message
         run: |
+          # 获取最新的 commit 消息
           COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-          CLEANED_MESSAGE="${COMMIT_MESSAGE//自动更新/}"
+          
+          # 清理 commit 消息：去除换行符和特殊字符
+          CLEANED_MESSAGE=$(echo "$COMMIT_MESSAGE" | tr -d '\n' | sed 's/自动更新//g')
+          
+          # 将清理后的 commit 消息设置为环境变量
           echo "cleaned_message=$CLEANED_MESSAGE" >> $GITHUB_ENV
       - name: Install pnpm
         run: npm install -g pnpm
