@@ -59,12 +59,13 @@ jobs:
       - name: Get Release Asset Temporary URL
         id: get_download_url
         run: |
-          ASSET_ID=$(gh api repos/${{ github.repository }}/releases/tags/v${{ env.APP_VERSION }} --jq '.assets[] | select(.name=="app.zip") | .id')
+          BROWSER_URL=$(gh api repos/${{ github.repository }}/releases/tags/v${{ env.APP_VERSION }} --jq '.assets[] | select(.name=="app.zip") | .browser_download_url')
+          echo "browser_url=${BROWSER_URL}"
           TEMP_URL=$(curl -s -D - -o /dev/null --max-redirs 0 \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/octet-stream" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/assets/${ASSET_ID}" \
+            "${BROWSER_URL}" \
             | grep -i "^location:" | awk '{print $2}' | tr -d '\r')
+          echo "temp_url=${TEMP_URL}"
           echo "url=${TEMP_URL}" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
